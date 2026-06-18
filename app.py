@@ -10,7 +10,7 @@ def init_db():
         mydb = mysql.connector.connect(
         host = "localhost",
         user = "root",
-        password = "123"
+        password = ""
         )
         cursor = mydb.cursor()
 
@@ -32,13 +32,13 @@ def init_db():
     except mysql.connector.Error as err:
         st.error(f"Database error: {err}")
 
-#Save all the user data alogside the AI response using MySQL syntax 
+#Save all the user data alongside the AI response using MySQL syntax 
 def save_issue(title,category,description,action_plan):
     try:
         mydb = mysql.connector.connect(
         host = "localhost",
         user = "root",
-        password = "123",
+        password = "",
         database = "community_issues"
         )
         cursor = mydb.cursor()
@@ -53,13 +53,13 @@ def save_issue(title,category,description,action_plan):
     except mysql.connector.Error as err:
         st.error(f"Database error: {err}")
 
-#retrive all the community logs from the MYSQL database 
+#Retrieve all the community logs from the MySQL database 
 def fetch_issues():
     try:
         mydb = mysql.connector.connect(
         host = "localhost",
         user = "root",
-        password = "123",
+        password = "",
         database = "community_issues"
         )
         cursor = mydb.cursor()
@@ -76,8 +76,8 @@ def fetch_issues():
 init_db()
     
 #Create the AI Wrapper 
-#We will integerate the prompt into the AI wrapper to generate the action plan based on the user input
-#Promp we use the consept of RACE (Role, Action, Context, Expecation) to generate the action plan
+#We will integrate the prompt into the AI wrapper to generate the action plan based on the user input
+#Prompt: we use the concept of RACE (Role, Action, Context, Expectation) to generate the action plan
 def generate_action_plan(api_key,title,category,description):
     try:
         client = genai.Client(api_key = api_key)
@@ -104,22 +104,22 @@ def generate_action_plan(api_key,title,category,description):
 
 st.set_page_config(page_title ="Community Action Hub (MySQL Edition)",layout= "wide")
 st.title("Community Action Hub")
-st.caption("Empowering neighbours with ersistent, production-grade scaling infrastructure.")
+st.caption("Empowering neighbours with persistent, production-grade scaling infrastructure.")
 st.markdown("---")
 
 #Sidebar Configuration
 with st.sidebar:
     st.header("Configuration")
-    user_api_key = st.text_input("Google AI Studio API Key", type="password",help="Input your Germini API key here.")
-    st.markdown("[Get a free Germini API key here](https://aistudio.google.com/api-keys?project=gen-lang-client-0779282876)")
+    user_api_key = st.text_input("Google AI Studio API Key", type="password",help="Input your Gemini API key here.")
+    st.markdown("[Get a free Gemini API key here](https://aistudio.google.com/api-keys?project=gen-lang-client-0779282876)")
 
 #Layout Split 
 col1,col2 = st.columns([2,3],gap="large")  
 with col1:
     st.subheader("Log Community Issues")
     with st.form("Issue_submission_form",clear_on_submit = True):
-        issue_title = st.text_input("Short Title /Headline ",placeholder = "Blocked ddrainage at Jalan Jun")
-        issue_category = st.selectbox("Category", ["Infrastructure","Public Safety","Enviroment","Health & Sanitation","Others"])
+        issue_title = st.text_input("Short Title /Headline ",placeholder = "Blocked drainage at Jalan Jun")
+        issue_category = st.selectbox("Category", ["Infrastructure","Public Safety","Environment","Health & Sanitation","Others"])
         issue_desc = st.text_area("Detailed Context",placeholder = "Provide a detailed description of the issue...")
 
         submit_clicked = st.form_submit_button("Submit & Request AI Solution Blueprint")
@@ -128,9 +128,9 @@ with col1:
             if not user_api_key:
                 st.error("Please enter your Google AI Studio API key in the sidebar.")
             elif not issue_title or not issue_desc:
-                st.warning("What your problem?")
+                st.warning("What's your problem?")
             else:
-                with st.spinner("Analyzing your porblem & structuring task list...."):
+                with st.spinner("Analyzing your problem & structuring task list.."):
                     #1.Request the AI Generation 
                     ai_blueprint = generate_action_plan(user_api_key,issue_title,issue_category,issue_desc)
 
